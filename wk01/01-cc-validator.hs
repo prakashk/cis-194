@@ -2,6 +2,7 @@
 
 -- Exercise 01
 
+-- Return the list of digits of the input integer
 toDigits :: Integer -> [Integer]
 toDigits n
   | n == 0 = [0]
@@ -9,6 +10,7 @@ toDigits n
   | n < 10 = [n]
   | otherwise = (toDigits $ n `div` 10) ++ (toDigits $ n `rem` 10)
 
+-- Return the list of digits of the input integer in reverse order
 toDigitsRev :: Integer -> [Integer]
 toDigitsRev n
   | n == 0 = [0]
@@ -18,6 +20,7 @@ toDigitsRev n
 
 -- Exercise 02
 
+-- Double every other digit, starting from the last one
 doubleEveryOther :: [Integer] -> [Integer]
 doubleEveryOther ds = doubleLastIfTrue ds False
   where
@@ -27,6 +30,7 @@ doubleEveryOther ds = doubleLastIfTrue ds False
 
 -- Exercise 03
 
+-- sum all digits of the input list of integers
 sumDigits :: [Integer] -> Integer
 sumDigits = sum . map sumNumDigits
   where
@@ -34,6 +38,7 @@ sumDigits = sum . map sumNumDigits
 
 -- Exercise 04
 
+-- validate the input integer as a valid credit card number
 validate :: Integer -> Bool
 validate = isDivByTen . sumDigits . doubleEveryOther . toDigits
   where
