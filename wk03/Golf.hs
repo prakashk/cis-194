@@ -35,4 +35,13 @@ incr :: Int -> [Int] -> [Int]
 incr n acc = take n acc ++ [(acc !! n) + 1] ++ drop (n+1) acc
 
 render :: [Int] -> String
-render xs = unlines $ map (\(i, n) -> show i ++ "|" ++ replicate n '*') $ zip [0..9] xs
+render xs = unlines $ transpose $ map (\(i, n) -> show i ++ "=" ++ replicate n '*') $ zip [0..9] xs
+
+transpose :: [String] -> [String]
+transpose xs =
+  let maxLen = maximum . map length $ xs
+      pad x = (replicate (maxLen - length x) ' ') ++ reverse x
+      bycol _ [] = []
+      bycol 0 _ = []
+      bycol n xs = (map head xs) : (bycol (n-1) $ map tail xs)
+  in bycol maxLen $ map (pad) xs
