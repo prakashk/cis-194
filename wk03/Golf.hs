@@ -21,4 +21,18 @@ skips xs =
 -- Local maxima
 
 localMaxima :: [Integer] -> [Integer]
-localMaxima xs = map (\(_, x, _) -> x) $ filter (\(a, b, c) -> b > a && b > c) $ zip3 xs (tail xs) (drop 2 xs)
+localMaxima xs = map (\(_, x, _) -> x)
+                 $ filter (\(a, b, c) -> b > a && b > c)
+                 $ zip3 xs (tail xs) (drop 2 xs)
+
+-- Exercise 03
+-- Histogram
+
+histogram :: [Int] -> String
+histogram xs = render $ foldl (\a n -> incr n a) (replicate 10 0) xs
+
+incr :: Int -> [Int] -> [Int]
+incr n acc = take n acc ++ [(acc !! n) + 1] ++ drop (n+1) acc
+
+render :: [Int] -> String
+render xs = unlines $ map (\n -> replicate n '*') xs
