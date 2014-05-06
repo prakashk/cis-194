@@ -35,4 +35,4 @@ incr :: Int -> [Int] -> [Int]
 incr n acc = take n acc ++ [(acc !! n) + 1] ++ drop (n+1) acc
 
 render :: [Int] -> String
-render xs = unlines $ map (\n -> replicate n '*') xs
+render xs = unlines $ map (\(i, n) -> show i ++ "|" ++ replicate n '*') $ zip [0..9] xs
