@@ -34,10 +34,27 @@ data Tree a = Leaf | Node Integer (Tree a) a (Tree a)
 foldTree :: [a] -> Tree a
 foldTree xs = foldr insert Leaf xs
   where
-    height Leaf = -1
-    height (Node h left x right) = h
-    insert x Leaf = Node 0 Leaf x Leaf
-    insert x (Node h left r right)
-      | height left > height right = Node h left r (insert x right)
-      | height left < height right = Node h (insert x left) r right
-      | otherwise                  = Node (h+1) (insert x left) r right
+    height Leaf             = -1
+    height (Node h lt x rt) = h
+
+    -- left Leaf            = Leaf
+    -- left (Node _ lt _ _) = lt
+
+    -- right Leaf            = Leaf
+    -- right (Node _ _ _ rt) = rt
+
+    count Leaf = 0
+    count (Node _ lt _ rt) = count lt + 1 + count rt
+
+    insert x Leaf             = Node 0 Leaf x Leaf
+    insert x (Node h Leaf r Leaf) = Node (h+1) (insert x Leaf) r Leaf
+    insert x (Node h Leaf r rt) = Node h (insert x Leaf) r rt
+    insert x (Node h lt r Leaf) = Node h lt r (insert x Leaf)
+    insert x (Node h lt r rt)
+      | height lt > height rt = Node h lt r (insert x rt)
+      | height lt < height rt = Node h (insert x lt) r rt
+      | count lt > count rt   = Node h lt r (insert x rt)
+      | count lt < count rt   = Node h (insert x lt) r rt
+      | otherwise             = let newlt = insert x lt
+                                    newheight = 1 + max (height newlt) (height rt)
+                                in Node newheight newlt r rt
