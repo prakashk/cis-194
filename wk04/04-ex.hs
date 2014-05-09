@@ -24,7 +24,7 @@ fun1' = product . map (subtract 2) . filter even
 -- fun2' :: Integer -> Integer
 -- fun2' = ...
 
--- ------------------------
+-- --------------------------------------------------------------------------
 
 -- Exercise 02: Folding with trees
 
@@ -58,3 +58,27 @@ foldTree xs = foldr insert Leaf xs
       | otherwise             = let newlt = insert x lt
                                     newheight = 1 + max (height newlt) (height rt)
                                 in Node newheight newlt r rt
+
+-- --------------------------------------------------------------------------
+
+-- Exercise 03: More folds!
+
+-- 1. Implement a function using a fold
+--    xor :: [Bool] -> Bool
+-- which returns True if and only if there are an odd number of True
+-- values contained in the input list. It does not matter how many
+-- False values the input list contains. For example,
+-- xor [False, True, False] == True
+-- xor [False, True, False, False, True] == False
+
+xor :: [Bool] -> Bool
+xor = foldr (\b a -> not b || not a) False . filter (id)
+
+-- 2. Implement map as a fold. That is, complete the definition
+-- map' :: (a -> b) -> [a] -> [b]
+-- map' f = foldr ...
+-- in such a way that map’ behaves identically to the standard map
+-- function.
+
+map' :: (a -> b) -> [a] -> [b]
+map' f = foldr (\x acc -> (f x) : acc) []
