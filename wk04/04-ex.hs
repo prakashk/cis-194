@@ -82,3 +82,20 @@ xor = foldr (\b a -> not b || not a) False . filter (id)
 
 map' :: (a -> b) -> [a] -> [b]
 map' f = foldr (\x acc -> (f x) : acc) []
+
+-- 3. (Optional) Implement foldl using foldr.
+-- myFoldl :: (a -> b -> a) -> a -> [b] -> a
+
+-- Exercise 04: Finding primes
+-- using the Sieve of Sundaram
+
+-- for an integer n, generate all odd prime numbers up to 2n+2
+sieveSundaram :: Int -> [Int]
+sieveSundaram n = 2 : (doublePlusOne $ [1..n] `minus` removables half_n)
+  where
+    half_n = n `div` 2
+    cartProd i j = [(x,y) | x <- [1..i], y <- [1..j], x <= y]
+    removables n = map (\(a,b) -> a + b + 2*a*b) $ cartProd n n
+    filterNot p = filter (not . p)
+    minus xs ys = filterNot (\x -> x `elem` ys) xs
+    doublePlusOne = map (\x -> 2*x+1)
