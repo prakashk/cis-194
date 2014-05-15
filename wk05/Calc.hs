@@ -3,6 +3,7 @@
 module Calc where
 
 import ExprT
+import Expr
 import Parser
 
 -- Exercise 01
@@ -28,13 +29,6 @@ evalStr :: String -> Maybe Integer
 evalStr = fmap eval . parseExp Lit Add Mul
 
 -- Exercise 03
-
--- typeclass Expr
-
-class Expr a where
-  lit :: Integer -> a
-  add :: a -> a -> a
-  mul :: a -> a -> a
 
 instance Expr ExprT where
   lit = Lit
