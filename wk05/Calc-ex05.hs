@@ -1,3 +1,6 @@
+{-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE FlexibleInstances #-}
+
 module Calc where
 
 import Expr
@@ -8,10 +11,10 @@ import StackVM
 
 instance Expr Program where
   lit x = [PushI x]
-  add x y = [PushI x, PushI y, Add]
-  mul x y = [PushI x, PushI y, Mul]
+  add x y = x ++ y ++ [Add]
+  mul x y = x ++ y ++ [Mul]
 
 -- Compiler for StackVM
 
 compile :: String -> Maybe Program
-compile = concat $ parseExp Lit Add Mul
+compile = parseExp lit add mul
