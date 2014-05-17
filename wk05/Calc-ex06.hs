@@ -15,7 +15,6 @@ data VarExprT = Lit Integer
 
 type EvalVarMap = (M.Map String Integer -> Maybe Integer)
 
-
 instance Expr VarExprT where
   lit = Lit
   add = Add
@@ -27,21 +26,18 @@ class HasVars a where
 instance HasVars VarExprT where
   var = Var
 
--- instance HasVars (M.Map String Integer -> Maybe Integer) where
 instance HasVars EvalVarMap where
   var = M.lookup
 
 myLift :: (a -> a -> a) -> Maybe a -> Maybe a -> Maybe a
-myLift f Nothing _ = Nothing
-myLift f _ Nothing = Nothing
+myLift f Nothing _         = Nothing
+myLift f _ Nothing         = Nothing
 myLift f (Just a) (Just b) = Just (f a b)
 
 instance Expr EvalVarMap where
-  lit x = (\_ -> Just x)
-  add = undefined
-  mul = undefined
-  -- add x y = (\m -> Just (x $ m + y $ m))
-  -- mul x y = (\_ -> Just (x * y))
+  lit x   = (\_ -> Just x)
+  add x y = (\m -> myLift (+) (x m) (y m))
+  mul x y = (\m -> myLift (*) (x m) (y m))
 
 withVars :: [(String, Integer)]
             -> EvalVarMap
