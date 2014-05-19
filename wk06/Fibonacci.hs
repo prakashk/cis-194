@@ -1,3 +1,6 @@
+{-# OPTIONS_GHC -fno-warn-missing-methods #-}
+{-# LANGUAGE FlexibleInstances, FlexibleContexts #-}
+
 import Data.List (intersperse)
 
 -- Exercise 1
@@ -18,6 +21,10 @@ fibs2 = 0 : 1 : zipWith (+) fibs2 (tail fibs2)
 -- Exercise 3
 
 data Stream a = SCons a (Stream a)
+
+-- (+++) :: a -> Stream a -> Stream a
+-- (+++) = SCons
+-- infixr 5 +++
 
 streamToList :: Stream a -> [a]
 streamToList (SCons x xs) = x : streamToList xs
@@ -40,6 +47,12 @@ streamMap f (SCons x s) = SCons (f x) (streamMap f s)
 streamFromSeed :: (a -> a) -> a -> Stream a
 streamFromSeed f x = SCons x $ streamFromSeed f (f x)
 
+streamZip :: Stream a -> Stream b -> Stream (a, b)
+streamZip (SCons x xs) (SCons y ys) = SCons (x, y) (streamZip xs ys)
+
+streamZipWith :: (a -> b -> c) -> Stream a -> Stream b -> Stream c
+streamZipWith f (SCons x xs) (SCons y ys) = SCons (f x y) (streamZipWith f xs ys)
+
 -- Exercise 5
 
 nats :: Stream Integer
@@ -49,3 +62,20 @@ ruler :: Stream Integer
 ruler = streamMap f $ streamFromSeed (+1) 1
         where f x | odd x = 0
                   | otherwise = 1 + f (x `div` 2)
+
+-- Exercise 6
+
+-- define a generating function
+
+x :: Stream Integer
+x = SCons 0 (SCons 1 (streamRepeat 0))
+
+instance Num Integer => Num (Stream Integer) where
+  fromInteger n = SCons n (streamRepeat 0)
+  negate = streamMap negate
+  (+) = streamZipWith (+)
+  (*) (SCons x xs) s2@(SCons y ys) = SCons (x * y) ((streamMap (* x) ys) + (xs * s2))
+
+instance Fractional Integer => Fractional (Stream Integer) where
+  (/) (SCons x xs) (SCons y ys) = q
+    where q = SCons (x `div` y) (streamMap (/y) (xs - q * ys))
