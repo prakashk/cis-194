@@ -70,12 +70,15 @@ ruler = streamMap f $ streamFromSeed (+1) 1
 x :: Stream Integer
 x = SCons 0 (SCons 1 (streamRepeat 0))
 
-instance Num Integer => Num (Stream Integer) where
+instance Num (Stream Integer) where
   fromInteger n = SCons n (streamRepeat 0)
   negate = streamMap negate
   (+) = streamZipWith (+)
   (*) (SCons x xs) s2@(SCons y ys) = SCons (x * y) ((streamMap (* x) ys) + (xs * s2))
 
-instance Fractional Integer => Fractional (Stream Integer) where
-  (/) (SCons x xs) (SCons y ys) = q
-    where q = SCons (x `div` y) (streamMap (/y) (xs - q * ys))
+instance Fractional (Stream Integer) where
+  (/) s1@(SCons x xs) s2@(SCons y ys) = q
+    where q = SCons (x `div` y) (streamMap (`div` y) (xs - (s1 / s2) * ys))
+
+fibs3 :: Stream Integer
+fibs3 = x / (1 - x - x*x)
