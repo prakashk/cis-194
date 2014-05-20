@@ -64,8 +64,7 @@ ruler = streamMap f $ streamFromSeed (+1) 1
                   | otherwise = 1 + f (x `div` 2)
 
 -- Exercise 6
-
--- define a generating function
+-- Fibonacci series -- using a generating function
 
 x :: Stream Integer
 x = SCons 0 (SCons 1 (streamRepeat 0))
@@ -82,3 +81,18 @@ instance Fractional (Stream Integer) where
 
 fibs3 :: Stream Integer
 fibs3 = x / (1 - x - x*x)
+
+-- Exercise 7
+-- Fibonacci series -- using matrix multiplication
+
+data Matrix = Matrix Integer Integer Integer Integer
+              deriving (Eq, Show)
+
+instance Num Matrix where
+  (*) (Matrix a1 a2 a3 a4) (Matrix b1 b2 b3 b4) =
+    Matrix (a1*b1+a2*b3) (a1*b2+a2*b4) (a3*b1+a4*b3) (a3*b2+a4*b4)
+
+fib4 :: Integer -> Integer
+fib4 0 = 0
+fib4 n = mat2fib $ (Matrix 1 1 1 0)^n
+         where mat2fib (Matrix a b c d) = b
