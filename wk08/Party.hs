@@ -3,6 +3,7 @@
 module Party where
 
 import Employee
+import Data.Tree
 
 -- Exercise 1
 
@@ -19,3 +20,18 @@ glCons e (GL es fun) = GL (e:es) (fun + empFun e)
 
 moreFun :: GuestList -> GuestList -> GuestList
 moreFun gl1@(GL _ f1) gl2@(GL _ f2) = if (f1 > f2) then gl1 else gl2
+
+-- Exercise 2
+
+-- implement treeFold for Data.Tree
+
+treeFold :: (b -> a -> b) -> b -> Tree a -> b
+treeFold f z t = foldl f z $ nodeList t
+
+nodeList :: Tree a -> [a]
+nodeList (Node a []) = [a]
+nodeList (Node a sf) = a : (concat . map nodeList) sf
+
+-- Exercise 3
+
+nextLevel :: Employee -> [(GuestList, GuestList)] -> [(GuestList, GuestList)]
